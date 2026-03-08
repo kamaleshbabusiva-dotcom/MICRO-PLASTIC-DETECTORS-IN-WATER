@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { MusicProvider } from './context/MusicContext';
 import { LanguageProvider } from './context/LanguageContext';
 import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 import OnboardingPage from './pages/OnboardingPage';
 import DashboardPage from './pages/DashboardPage';
 import ProfilePage from './pages/ProfilePage';
@@ -71,6 +72,13 @@ const App = () => {
                             <Route path="/login" element={
                                 <AuthGate>
                                     <LoginPage />
+                                </AuthGate>
+                            } />
+
+                            {/* Register Route */}
+                            <Route path="/register" element={
+                                <AuthGate>
+                                    <RegisterPage />
                                 </AuthGate>
                             } />
 
