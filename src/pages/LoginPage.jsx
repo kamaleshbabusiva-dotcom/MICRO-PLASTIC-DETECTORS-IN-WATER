@@ -27,7 +27,6 @@ export default function LoginPage() {
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState('')
     const [showLangMenu, setShowLangMenu] = useState(false)
-    const [showDemoSection, setShowDemoSection] = useState(false)
 
     useEffect(() => {
         if (authError) setError(authError)
@@ -188,10 +187,10 @@ export default function LoginPage() {
                     </div>
                 </nav>
 
-                {/* Hero Section */}
+                {/* Main Content */}
                 <div className="flex-1 flex items-center justify-center px-4 py-8">
                     <div className="max-w-6xl w-full mx-auto grid lg:grid-cols-2 gap-16 items-center">
-                        {/* Left - Auth Form */}
+                        {/* Left - Auth */}
                         <div className="animate-fade-in">
                             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6">
                                 <Zap className="w-4 h-4 text-blue-400" />
@@ -205,9 +204,40 @@ export default function LoginPage() {
                             </h1>
                             <p className="text-gray-400 mb-8 text-sm">{t('hero_desc')}</p>
 
-                            {/* Auth Tabs */}
+                            {/* ═══ Role Selection (Admin / Citizen) ═══ */}
+                            <div className="flex flex-col gap-3 max-w-md mb-6">
+                                <button
+                                    id="admin-login-btn"
+                                    onClick={adminDemoLogin}
+                                    className="group flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-lg transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25 hover:scale-105"
+                                >
+                                    <ShieldAlert className="w-5 h-5 text-blue-200" />
+                                    Enter as Water Inspector
+                                    <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                </button>
+
+                                <button
+                                    id="citizen-login-btn"
+                                    onClick={citizenDemoLogin}
+                                    className="group flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-white/10 border-2 border-white/20 text-white font-bold text-lg transition-all duration-300 hover:bg-white/20 hover:scale-105"
+                                >
+                                    <Users className="w-5 h-5 text-emerald-400" />
+                                    Enter as Concerned Citizen
+                                    <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                </button>
+                            </div>
+
+                            {/* ═══ Divider ═══ */}
+                            <div className="flex items-center gap-3 max-w-md mb-6">
+                                <div className="flex-1 h-px bg-white/10" />
+                                <span className="text-xs text-gray-600 font-bold uppercase tracking-widest">or sign in with</span>
+                                <div className="flex-1 h-px bg-white/10" />
+                            </div>
+
+                            {/* ═══ Firebase Auth Card ═══ */}
                             <div className="glass-card p-6 border-white/10 max-w-md">
-                                <div className="flex gap-1 p-1 bg-white/5 rounded-xl mb-6">
+                                {/* Auth Method Tabs */}
+                                <div className="flex gap-1 p-1 bg-white/5 rounded-xl mb-5">
                                     {tabs.map(tab => (
                                         <button
                                             key={tab.id}
@@ -288,7 +318,7 @@ export default function LoginPage() {
                                 {/* Google Tab */}
                                 {activeTab === 'google' && (
                                     <div className="space-y-4 animate-fade-in">
-                                        <div className="text-center mb-4">
+                                        <div className="text-center mb-2">
                                             <p className="text-gray-400 text-sm">Sign in instantly with your Google account</p>
                                         </div>
                                         <button
@@ -375,44 +405,6 @@ export default function LoginPage() {
                                                 </button>
                                             </>
                                         )}
-                                    </div>
-                                )}
-
-                                {/* Divider */}
-                                <div className="flex items-center gap-3 my-5">
-                                    <div className="flex-1 h-px bg-white/10" />
-                                    <span className="text-xs text-gray-600 font-bold uppercase tracking-widest">or demo</span>
-                                    <div className="flex-1 h-px bg-white/10" />
-                                </div>
-
-                                {/* Demo Login Toggle */}
-                                <button
-                                    onClick={() => setShowDemoSection(!showDemoSection)}
-                                    className="w-full text-center text-xs text-gray-500 hover:text-gray-300 transition-colors py-1"
-                                >
-                                    {showDemoSection ? 'Hide' : 'Show'} Demo Access ▾
-                                </button>
-
-                                {showDemoSection && (
-                                    <div className="space-y-2 mt-3 animate-fade-in">
-                                        <button
-                                            id="admin-login-btn"
-                                            onClick={adminDemoLogin}
-                                            className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-blue-600/80 to-indigo-600/80 text-white font-semibold text-sm transition-all hover:shadow-lg hover:shadow-blue-500/20 hover:scale-[1.02] active:scale-[0.98]"
-                                        >
-                                            <ShieldAlert className="w-4 h-4" />
-                                            Enter as Water Inspector
-                                            <ChevronRight className="w-4 h-4" />
-                                        </button>
-                                        <button
-                                            id="citizen-login-btn"
-                                            onClick={citizenDemoLogin}
-                                            className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white/10 border border-white/15 text-white font-semibold text-sm transition-all hover:bg-white/20 hover:scale-[1.02] active:scale-[0.98]"
-                                        >
-                                            <Users className="w-4 h-4 text-emerald-400" />
-                                            Enter as Concerned Citizen
-                                            <ChevronRight className="w-4 h-4" />
-                                        </button>
                                     </div>
                                 )}
                             </div>
