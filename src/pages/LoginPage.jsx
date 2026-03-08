@@ -10,7 +10,6 @@ import { Link } from 'react-router-dom'
 
 export default function LoginPage() {
     const {
-        adminDemoLogin, citizenDemoLogin,
         loginWithGoogle, loginWithEmail, loginWithPhone, confirmOTP,
         authError
     } = useAuth()
@@ -204,27 +203,23 @@ export default function LoginPage() {
                             </h1>
                             <p className="text-gray-400 mb-8 text-sm">{t('hero_desc')}</p>
 
-                            {/* ═══ Role Selection (Admin / Citizen) ═══ */}
-                            <div className="flex flex-col gap-3 max-w-md mb-6">
-                                <button
-                                    id="admin-login-btn"
-                                    onClick={adminDemoLogin}
-                                    className="group flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-lg transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25 hover:scale-105"
-                                >
-                                    <ShieldAlert className="w-5 h-5 text-blue-200" />
-                                    Enter as Water Inspector
-                                    <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                                </button>
-
-                                <button
-                                    id="citizen-login-btn"
-                                    onClick={citizenDemoLogin}
-                                    className="group flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-white/10 border-2 border-white/20 text-white font-bold text-lg transition-all duration-300 hover:bg-white/20 hover:scale-105"
-                                >
-                                    <Users className="w-5 h-5 text-emerald-400" />
-                                    Enter as Concerned Citizen
-                                    <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                                </button>
+                            {/* ═══ Role Information ═══ */}
+                            <div className="max-w-md mb-6">
+                                <div className="glass-card p-4 border-white/10 bg-gradient-to-r from-blue-500/5 to-indigo-500/5">
+                                    <div className="flex items-start gap-3">
+                                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shrink-0 mt-0.5">
+                                            <ShieldAlert className="w-5 h-5 text-white" />
+                                        </div>
+                                        <div>
+                                            <h3 className="text-sm font-bold text-white mb-1">Role-Based Access</h3>
+                                            <p className="text-xs text-gray-400 leading-relaxed">
+                                                <span className="text-blue-400 font-semibold">Admin Panel</span> — reserved for authorized inspector email only.
+                                                <br />
+                                                <span className="text-emerald-400 font-semibold">Citizen Panel</span> — all other registered users.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                             {/* ═══ Divider ═══ */}

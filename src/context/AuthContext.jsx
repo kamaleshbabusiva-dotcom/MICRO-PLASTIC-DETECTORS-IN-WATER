@@ -17,6 +17,14 @@ const AuthContext = createContext({})
 
 export const useAuth = () => useContext(AuthContext)
 
+// ── Admin email whitelist ───────────────────────────────────────
+const ADMIN_EMAIL = 'kamaleshbabusiva@gmail.com'
+
+function getRole(email) {
+    if (!email) return 'citizen'
+    return email.toLowerCase().trim() === ADMIN_EMAIL ? 'admin' : 'citizen'
+}
+
 // Demo users (preserved as fallback)
 const adminUser = {
     id: 'admin-001',
@@ -130,13 +138,17 @@ export const AuthProvider = ({ children }) => {
                 else if (providerData?.providerId === 'phone') provider = 'phone'
                 setAuthProvider(provider)
 
+                // Determine role based on email (only admin email gets admin)
+                const userEmail = fbUser.email || fbUser.phoneNumber || ''
+                const assignedRole = getRole(userEmail)
+
                 // Build user object compatible with existing app
                 const appUser = {
                     id: fbUser.uid,
-                    email: fbUser.email || fbUser.phoneNumber || '',
-                    role: 'citizen', // default, updated from Supabase profile
+                    email: userEmail,
+                    role: assignedRole,
                     user_metadata: {
-                        full_name: fbUser.displayName || fbUser.email || fbUser.phoneNumber || 'User',
+                        full_name: fbUser.displayName || userEmail || 'User',
                         avatar_url: fbUser.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${fbUser.uid}`,
                         name: fbUser.displayName || 'User'
                     }
@@ -148,26 +160,29 @@ export const AuthProvider = ({ children }) => {
                 // Sync to Supabase and fetch full profile
                 const supabaseProfile = await syncUserToSupabase(fbUser, provider)
                 if (supabaseProfile) {
-                    appUser.role = supabaseProfile.role || 'citizen'
-                    setUserRole(supabaseProfile.role || 'citizen')
-                    setIsOnboarded(supabaseProfile.is_onboarded || false)
+                    // Always use email-based role (ignore Supabase role)
+                    appUser.role = assignedRole
+                    setUserRole(assignedRole)
+                    // Citizens skip onboarding, admin respects Supabase flag
+                    setIsOnboarded(assignedRole === 'citizen' ? true : (supabaseProfile.is_onboarded || false))
                     setProfile({
                         name: supabaseProfile.full_name || appUser.user_metadata.full_name,
-                        profession: supabaseProfile.specialty || 'Citizen Monitor',
+                        profession: assignedRole === 'admin' ? 'Senior Water Inspector' : (supabaseProfile.specialty || 'Citizen Monitor'),
                         streak: supabaseProfile.streak_count || 0,
                         bonusPoints: supabaseProfile.bonus_points || 0,
                         avatar: supabaseProfile.avatar_url || appUser.user_metadata.avatar_url,
                         email: supabaseProfile.email || appUser.email,
                         supabaseId: supabaseProfile.id
                     })
-                    setUser({ ...appUser, role: supabaseProfile.role || 'citizen' })
+                    setUser({ ...appUser, role: assignedRole })
                 } else {
-                    // No Supabase data — set defaults (treat as new user)
-                    setUserRole('citizen')
-                    setIsOnboarded(false)
+                    // No Supabase data — set defaults using email-based role
+                    setUserRole(assignedRole)
+                    // Citizens skip onboarding entirely
+                    setIsOnboarded(assignedRole === 'citizen' ? true : false)
                     setProfile({
                         name: appUser.user_metadata.full_name,
-                        profession: 'Citizen Monitor',
+                        profession: assignedRole === 'admin' ? 'Senior Water Inspector' : 'Citizen Monitor',
                         streak: 0,
                         bonusPoints: 0,
                         avatar: appUser.user_metadata.avatar_url,
